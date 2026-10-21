@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<title>AI Trading Lab</title>
+<meta name="description" content="Several AI models each run a $10,000 paper portfolio with the TradingAgents multi-agent framework. Paper money only; not investment advice.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0b0b'/%3E%3Cpath d='M7 22l6-6 4 4 8-9' fill='none' stroke='%23fcfcfb' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/18.0.14/lib/marked.umd.min.js" integrity="sha512-trN9mtGYvoySPVI909KTnwbJI9AkKPydRCV/qAsUG1+q39hhpKltEag9b5JpdjeIZn5i8IH62hHRFdbKwMFh9w==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.4.16/purify.min.js" integrity="sha512-flQmhkXNRQ3iUfvtdCobtpMjCb6kE+zLnTiAulAQJ3WykVfy84JvCMOo6vhwWXHTXjR25h9Zj+LyGFRWKjRoag==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to results</a>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="title-row">
+      <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7"/><path d="M7 22l6-6 4 4 8-9"/></svg>
+      <h1>AI Trading Lab</h1>
+      <span class="tag">Paper money</span>
+    </div>
+    <p class="lede" id="lede">Several AI models each run a $10,000 paper portfolio with the TradingAgents multi-agent framework. No real money is traded: fills are simulated at the first market open after each decision.</p>
+    <p class="updated" id="updated">Loading results…</p>
+  </div>
+</header>
+
+<nav class="sections" aria-label="Sections">
+  <div class="wrap">
+    <a href="#leaderboard">Leaderboard</a>
+    <a href="#equity">Portfolio value</a>
+    <a href="#calls">Latest calls</a>
+    <a href="#detail">Each AI</a>
+    <a href="#methodology">Methodology</a>
+  </div>
+</nav>
+
+<main id="main" class="wrap">
+  <div id="notice"></div>
+
+  <section id="leaderboard" aria-labelledby="h-leaderboard" hidden>
+    <h2 id="h-leaderboard">Leaderboard</h2>
+    <p class="section-sub">Ranked by current portfolio value. Every portfolio started at $10,000.</p>
+    <div id="kpis" class="kpis"></div>
+    <div class="card flush">
+      <div class="scroll-x" id="board"></div>
+    </div>
+    <p class="footnote" id="board-note"></p>
+  </section>
+
+  <section id="equity" aria-labelledby="h-equity" hidden>
+    <h2 id="h-equity">Portfolio value</h2>
+    <p class="section-sub" id="equity-sub"></p>
+    <div class="card" id="equity-card"></div>
+  </section>
+
+  <section id="calls" aria-labelledby="h-calls" hidden>
+    <div class="section-head">
+      <div>
+        <h2 id="h-calls">Latest calls</h2>
+        <p class="section-sub">Each AI's rating per asset. A rating sets that asset's target weight for the next open. Select a cell to read the reasoning behind it.</p>
+      </div>
+      <label class="field" id="calls-date-field" hidden>
+        <span>Decision date</span>
+        <select id="calls-date"></select>
+      </label>
+    </div>
+    <div class="card" id="calls-card"></div>
+    <div class="card" id="weights-card" hidden></div>
+  </section>
+
+  <section id="detail" aria-labelledby="h-detail" hidden>
+    <h2 id="h-detail">Each AI</h2>
+    <p class="section-sub">Portfolio, orders, trades and every decision with its outcome. Pick an AI.</p>
+    <div class="tabs-scroll"><div class="tabs" role="tablist" aria-labelledby="h-detail" id="tabs"></div></div>
+    <div id="panel" role="tabpanel" tabindex="-1"></div>
+  </section>
+
+  <section id="methodology" aria-labelledby="h-method" hidden>
+    <h2 id="h-method">Methodology</h2>
+    <p class="section-sub">The rules were fixed before the first decision. Any later change is listed under "Changes since the start".</p>
+    <div class="method-grid" id="method"></div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p><strong>Paper-trading experiment. Not investment advice.</strong> No real money is traded and all fills are simulated. Nothing here is a recommendation to buy or sell any security or crypto asset.</p>
+    <p class="muted" id="foot-meta">No cookies, analytics or tracking.</p>
+  </div>
+</footer>
+
+<div id="tip" class="float-tip" role="tooltip" hidden></div>
+</body>
+</html>
