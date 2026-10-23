@@ -1219,6 +1219,10 @@
       risk.length ? risk.map(t => h('div', { class: 'risk-turn' }, t.role ? h('div', { class: 'turn-label' }, `${t.role} analyst`) : null, clamp(md(t.body)))) : md('')));
     out.push(sec('Analyst reports', 'The four reports every later step worked from.',
       ANALYSTS.map(([k, label]) => h('details', { class: 'report' }, h('summary', null, label), md(run[k])))));
+    if (typeof run.past_context === 'string' && run.past_context.trim()) {
+      out.push(sec('Track record and lessons', 'What the final decision-maker saw from this AI\'s graded calls and past reflections.',
+        h('details', { class: 'report' }, h('summary', null, 'Show record and lessons'), md(run.past_context))));
+    }
     if (typeof run.memory_note === 'string' && run.memory_note.trim()) {
       out.push(sec('Memory note', 'What this AI carried forward from its earlier calls.', h('details', { class: 'report' }, h('summary', null, 'Show note'), md(run.memory_note))));
     }
