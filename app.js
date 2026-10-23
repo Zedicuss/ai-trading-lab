@@ -701,8 +701,8 @@
       h('th', { rowspan: 2, class: 'num', scope: 'col', title: 'Times the portfolio lost its whole stake and restarted' }, 'Busts'),
       h('th', { rowspan: 2, class: 'num', scope: 'col', title: 'LLM tokens, input plus output' }, 'Tokens'));
     const head2 = h('tr', null,
-      h('th', { class: 'num', scope: 'col' }, 'Hit rate'), h('th', { class: 'num', scope: 'col' }, 'Avg alpha'),
-      h('th', { class: 'num', scope: 'col' }, 'Hit rate'), h('th', { class: 'num', scope: 'col' }, 'Avg alpha'));
+      h('th', { class: 'num', scope: 'col' }, 'Hit rate'), h('th', { class: 'num', scope: 'col' }, 'Avg signed alpha'),
+      h('th', { class: 'num', scope: 'col' }, 'Hit rate'), h('th', { class: 'num', scope: 'col' }, 'Avg signed alpha'));
     const rankOf = a => 1 + S.ranked.filter(o => o.equity - a.equity > 0.005).length;
     const rows = S.ranked.map((a, i) => {
       const w = (Math.abs(a.ret) / maxAbs) * 50;
@@ -727,8 +727,8 @@
         numTd(pts(a.excess), tone(a.excess)),
         numTd(pct(num(a.max_drawdown), 1)),
         numTd(lev(num(a.avg_gross))),
-        hitCell(a.hits_1d, a.graded_1d), numTd(pct(num(a.avg_alpha_1d), 2), tone(num(a.avg_alpha_1d))),
-        hitCell(a.hits, a.graded), numTd(pct(num(a.avg_alpha), 2), tone(num(a.avg_alpha))),
+        hitCell(a.hits_1d, a.graded_1d), numTd(pct(num(a.avg_earned_1d), 2), tone(num(a.avg_earned_1d))),
+        hitCell(a.hits, a.graded), numTd(pct(num(a.avg_earned), 2), tone(num(a.avg_earned))),
         numTd(int.format(num(a.trades) || 0)),
         h('td', { class: 'num', title: busts ? a.busts.map(x => `${fmtDay(x.date)}: ${money(num(x.equity))}`).join('; ') : null },
           busts ? h('span', { class: 'hitmark miss' }, h('span', { class: 'ico crit', 'aria-hidden': 'true' }, '!'), String(busts)) : h('span', { class: 'lown' }, '0')),
@@ -737,7 +737,7 @@
     });
     $('board').replaceChildren(h('table', { class: 'tbl board' }, h('thead', null, head1, head2), h('tbody', null, rows)));
     $('board-note').textContent = `Hit rate: share of directional calls (Buy, Overweight, Underweight, Sell) that beat ${b} in the called direction; `
-      + `n is how many have been graded. Alpha: the asset's return minus ${b}'s over the same window, averaged over graded calls. `
+      + `n is how many have been graded. Signed alpha: the asset's return minus ${b}'s over the same window, counted positive when the call's direction was right, averaged over graded calls. `
       + `A bust resets a portfolio to ${money(S.cap)}; value and return then cover the current stake only.`;
   }
 
