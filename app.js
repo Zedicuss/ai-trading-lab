@@ -951,6 +951,7 @@
         h('span', { class: 'models', title: modelsTitle(a) }, a.team ? modelsLine(a) : `Models: ${modelsLine(a)}`)),
       h('div', { class: 'kpis small' }, tiles),
       ratingMix(a),
+      a.team ? null : learningCard(a),
       chartsCard(a),
       a.team ? (() => { const c = h('div', { class: 'card' }); renderWeightsCard(c); return c.hidden ? null : c; })() : null,
       positionsCard(a),
@@ -976,6 +977,19 @@
     card.append(h('p', { class: 'chart-sub' }, `${int.format(total)} decisions across all assets.`), bar,
       h('div', { class: 'mix-legend' }, counts.map(([k, n]) => h('span', { class: 'scale-item' },
         h('span', { class: `swatch ${RATING[k].cls}` }), `${RATING[k].label} `, h('b', null, int.format(n)), ` (${pct(n / total, 0, false)})`))));
+    return card;
+  }
+
+  function learningCard(a) {
+    const card = h('div', { class: 'card' }, h('div', { class: 'card-head' }, h('div', null, h('h3', null, 'Learning check'),
+      h('p', null, "Each call is also rated a second time with this AI's own track record and lessons removed. "
+        + 'On calls where the two ratings point different ways, this compares what each would have earned (signed alpha per call).'))));
+    const line = (label, c) => {
+      if (!c || !num(c.n)) return h('p', { class: 'empty-inline' }, `${label}: no graded calls where the ratings differ yet.`);
+      return h('p', null, `${label}: ${int.format(c.n)} calls. With lessons `, h('span', { class: tone(num(c.with)) }, pct(num(c.with), 2)),
+        ', without ', h('span', { class: tone(num(c.without)) }, pct(num(c.without), 2)), '.');
+    };
+    card.append(line('Next session', a.learning_1d), line('Five sessions', a.learning_5d));
     return card;
   }
 
@@ -1095,7 +1109,9 @@
     const rows = list => list.map(r => {
       const open = h('button', { type: 'button', class: 'btn small' }, a.team ? 'Vote' : r.detail ? 'Reasoning' : 'Details');
       open.addEventListener('click', () => openReasoning(a.name, r.date, r.ticker, { from: 'log' }));
-      return h('tr', null, td(fmtDayShort(r.date)), td(h('strong', null, String(r.ticker ?? NONE))), td(chip(r.rating)),
+      return h('tr', null, td(fmtDayShort(r.date)), td(h('strong', null, String(r.ticker ?? NONE))),
+        td([chip(r.rating), r.shadow_rating && r.shadow_rating !== r.rating
+          ? h('span', { class: 'lown', title: 'Rating without lessons' }, ' without lessons: ', chip(r.shadow_rating)) : null]),
         a.team ? [numTd(isNum(r.consensus) ? signedNum(r.consensus) : NONE), numTd(r.votes && typeof r.votes === 'object' ? String(Object.keys(r.votes).length) : NONE)] : null,
         outcomeCells(r),
         a.team ? null : [numTd(duration(num(r.secs))), numTd(compact((num(r.tokens_in) || 0) + (num(r.tokens_out) || 0)))],
